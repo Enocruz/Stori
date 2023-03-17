@@ -1,0 +1,4 @@
+python-lambda-local==0.1.13
+boto3==1.26.83
+pytest==7.1.0
+coverage==7.2.1
