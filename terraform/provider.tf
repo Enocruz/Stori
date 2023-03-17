@@ -1,0 +1,29 @@
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"
+        version = "~> 4.21.0"
+    }
+    random = {
+        source = "hashicorp/random"
+        version = "~> 3.3.0"
+    }
+    archive = {
+        source = "hashicorp/archive"
+        version = "~> 2.2.0"
+    }
+  }
+
+required_version = "~> 1.0"
+
+backend "s3" {
+    bucket = "terraform-cruz-test"
+    key    = "state"
+    region = "us-west-2"
+  }
+
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
