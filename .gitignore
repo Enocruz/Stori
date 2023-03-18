@@ -132,3 +132,7 @@ dmypy.json
 terraform/.*
 terraform/response*
 terraform/tfplan
+terraform_rds/*.tfvars
+terraform_rds/tfplan
+terraform_rds/.*
+terraform_rds/response*
