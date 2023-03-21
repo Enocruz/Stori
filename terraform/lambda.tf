@@ -28,8 +28,10 @@ resource "aws_lambda_function" "transaction_lambda" {
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.transactions_lambda.key
 
-  runtime = "python3.8"
+  runtime = "python3.9"
   handler = "handler.handler"
+
+  timeout = 25
 
   source_code_hash = data.archive_file.transactions_lambda_zip.output_base64sha256
 
@@ -62,7 +64,7 @@ resource "aws_s3_object" "transactions_lambda" {
 data "aws_iam_policy_document" "s3_policy_document" {
   statement {
     effect    = "Allow"
-    actions   = ["s3:Put*", "s3:Get*"]
+    actions   = ["s3:Put*", "s3:Get*", "ses:SendEmail"]
     resources = ["*"]
   }
 }
