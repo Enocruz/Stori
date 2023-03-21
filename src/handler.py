@@ -3,6 +3,9 @@ from email_helper import send_email
 from s3_helper import get_file
 
 def handler(event, context):
+    """
+    Main handler for the lambda
+    """
     try:
         recipient = event.get("recipient")
         file_name = event.get("file")
@@ -19,6 +22,10 @@ def handler(event, context):
 
 
 def read_transactions(file) -> tuple[int, dict, dict]:
+    """
+    Converts the CSV transactions into readable information
+    Gets summaries and transactions per month
+    """
     transactions = {
         "debit": {"amount": 0, "total_transactions": 0},
         "credit": {"amount": 0, "total_transactions": 0}
@@ -49,6 +56,10 @@ def read_transactions(file) -> tuple[int, dict, dict]:
         return None, None, None
     
 def format_transaction(transaction: list) -> dict:
+    """
+    Converts an array into a dictionary and casts the
+    information
+    """
     return {
         "id": int(transaction[0]),
         "date": datetime.strptime(transaction[1], "%d/%m/%y"),
