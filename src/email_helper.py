@@ -8,13 +8,19 @@ SUBJECT = "Your transactions"
 CHARSET = "UTF-8"
 
 def send_email(recipient: str, total_balance: float, monthly_transactions: dict, balances: dict) -> str:
+    """
+    Creates the HTML body and sends the email
+    """
     monthly_transactions_html = create_monthly_transactions_html(transactions=monthly_transactions)
     averages_html = create_averages_html(balances=balances)
     html_body = create_body_html(total_balance=total_balance, transactions_html=monthly_transactions_html, averages_html=averages_html)
     return send(recipient=recipient, body_html=html_body)
 
 
-def send(recipient: str, body_html: str) -> str:            
+def send(recipient: str, body_html: str) -> str:   
+    """
+    Sends the email usin SES
+    """         
     client = boto3.client('ses',region_name=AWS_REGION)
     try:
         response = client.send_email(
@@ -37,7 +43,6 @@ def send(recipient: str, body_html: str) -> str:
             },
             Source=SENDER,
         )
-    # Display an error if something goes wrong.	
     except ClientError as e:
         print(e.response['Error']['Message'])
         return None
@@ -47,7 +52,9 @@ def send(recipient: str, body_html: str) -> str:
 
 
 def create_body_html(total_balance: float, transactions_html: str, averages_html: str) -> str:
-    # The HTML body of the email.
+    """
+    Builds the main html body for the email
+    """
     BODY_HTML = f"""<html>
     <head></head>
     <body>
@@ -69,12 +76,18 @@ def create_body_html(total_balance: float, transactions_html: str, averages_html
 
 
 def create_monthly_transactions_html(transactions: dict) -> str:
+    """
+    Builds the summary of the transactions per month into HTML
+    """
     monthly_t = ""
     for key, value in transactions.items():
         monthly_t += f"<p>Number of transactions in {key}: {value}</p>"
     return monthly_t
 
 def create_averages_html(balances: dict) -> str:
+    """
+    Builds the average for credit and debit transactions into HTML
+    """
     averages_t = ""
     for transaction_type in balances.keys():
         transactions = balances.get(transaction_type)
