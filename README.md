@@ -146,3 +146,11 @@ backend "s3" {
     region = "us-west-2"
 }
 ```
+
+# DESTROY
+
+To destroy all the AWS configuration run (within the terraform folder)
+
+```bash
+terraform destroy -auto-approve -input=false
+```

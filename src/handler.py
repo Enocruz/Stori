@@ -3,12 +3,20 @@ from email_helper import send_email
 from s3_helper import get_file
 
 def handler(event, context):
-    recipient = event.get("recipient")
-    file_name = event.get("file")
-    transactions_file = get_file(file_name=file_name)
-    total_balance, transactions, monthly_transactions = read_transactions(file=transactions_file)
-    id = send_email(recipient=recipient, total_balance=total_balance, monthly_transactions=monthly_transactions, balances=transactions)
-    return id
+    try:
+        recipient = event.get("recipient")
+        file_name = event.get("file")
+        transactions_file = get_file(file_name=file_name)
+        total_balance, transactions, monthly_transactions = read_transactions(file=transactions_file)
+        if not total_balance and not transactions and not monthly_transactions:
+            print("Cannot send email, input values are not valid")
+            return None
+        id = send_email(recipient=recipient, total_balance=total_balance, monthly_transactions=monthly_transactions, balances=transactions)
+        return id
+    except Exception as e:
+        print(e)
+        return None
+
 
 def read_transactions(file) -> tuple[int, dict, dict]:
     transactions = {
@@ -36,6 +44,7 @@ def read_transactions(file) -> tuple[int, dict, dict]:
                 monthly_transactions[month] = 1
         return total_balance, transactions, monthly_transactions
     except Exception as e:
+        print("Something happened in the parsing")
         print(e)
         return None, None, None
     
